@@ -13,7 +13,10 @@ class Textffcut < Formula
 
   def install
     venv = virtualenv_create(libexec, "python3.11")
-    venv.pip_install buildpath
+    # venv.pip_install は --no-deps のため依存が入らない。
+    # torch/mlx 等の大型依存は resource 化が非現実的なので
+    # python -m pip で依存ごとインストールする。
+    system libexec/"bin/python3", "-m", "pip", "install", buildpath.to_s
     bin.install_symlink libexec/"bin/textffcut"
   end
 
