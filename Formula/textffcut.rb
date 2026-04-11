@@ -12,12 +12,17 @@ class Textffcut < Formula
   depends_on "ffmpeg"
 
   def install
-    venv = virtualenv_create(libexec, "python3.11")
-    # venv.pip_install は --no-deps のため依存が入らない。
-    # torch/mlx 等の大型依存は resource 化が非現実的なので
-    # python -m pip で依存ごとインストールする。
-    system libexec/"bin/python3", "-m", "pip", "install", buildpath.to_s
+    virtualenv_create(libexec, "python3.11")
+    # ソースをlibexecに退避（post_installで使用、buildpathはinstall後に消える）
+    (libexec/"src").install Dir[buildpath/"*"]
     bin.install_symlink libexec/"bin/textffcut"
+  end
+
+  def post_install
+    # post_installフェーズではHomebrewのdylib relocationが実行されないため、
+    # cryptographyの.soヘッダーパディング不足エラーを回避できる
+    system libexec/"bin/python3", "-m", "pip", "install",
+           "--quiet", (libexec/"src").to_s
   end
 
   test do
