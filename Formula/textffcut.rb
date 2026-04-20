@@ -25,6 +25,23 @@ class Textffcut < Formula
            "--quiet", (libexec/"src").to_s
   end
 
+  def caveats
+    <<~EOS
+      textffcut コマンドが見つからない場合、以下を ~/.zshrc に追加してください:
+
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+
+      追加後、ターミナルを再起動するか以下を実行:
+
+        source ~/.zshrc
+
+      初回セットアップ:
+
+        textffcut activate XXXXX-XXXXX-XXXXX-XXXXX
+        textffcut gui
+    EOS
+  end
+
   test do
     assert_match "textffcut", shell_output("#{bin}/textffcut --help 2>&1")
   end
