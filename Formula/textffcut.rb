@@ -4,7 +4,7 @@ class Textffcut < Formula
   desc "Apple Silicon Mac専用バッチ文字起こしCLIツール"
   homepage "https://note.com/coidemo"
   url "https://github.com/Coidemo/TextffCut/archive/refs/tags/v2.0.8.tar.gz"
-  sha256 "9fbabeffb7ca4317b3cf418dc58742276223a3ca537b3618143ffc86dae55c59"
+  sha256 "0d525c327c7117ed1ba8440046df6a059e458f10b0777636ac46b8cad72a04eb"
   license "Proprietary"
 
   depends_on arch: :arm64
