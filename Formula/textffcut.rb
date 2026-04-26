@@ -15,7 +15,11 @@ class Textffcut < Formula
     virtualenv_create(libexec, "python3.11")
     # ソースをlibexecに退避（post_installで使用、buildpathはinstall後に消える）
     (libexec/"src").install Dir[buildpath/"*"]
-    bin.install_symlink libexec/"bin/textffcut"
+    # bin.install_symlink は post_install 後に実行する (順序の罠)
+    # 理由: install フェーズの時点で libexec/bin/textffcut はまだ存在しない
+    # (post_install の `pip install` で初めて生成される). その状態で
+    # install_symlink を呼ぶと broken symlink が作られ、brew link 段階で
+    # /opt/homebrew/bin/textffcut が作成されない.
   end
 
   def post_install
@@ -23,6 +27,8 @@ class Textffcut < Formula
     # cryptographyの.soヘッダーパディング不足エラーを回避できる
     system libexec/"bin/python3", "-m", "pip", "install",
            "--quiet", (libexec/"src").to_s
+    # textffcut entry point が pip install で生成された後に symlink を作る
+    bin.install_symlink libexec/"bin/textffcut"
   end
 
   def caveats
